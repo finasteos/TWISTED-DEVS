@@ -18,8 +18,8 @@ export const CommunicationLog = ({ logs, agents }: { logs: LogEntry[], agents: A
           const toName = log.toAgentId ? (agents.find(a => a.id === log.toAgentId)?.name.replace('AGENT__', '') || log.toAgentId) : null;
           
           return (
-            <div key={log.id} className="flex flex-col pl-4 py-1 hover:bg-zinc-900/30 rounded transition-colors group relative">
-              <div className="absolute left-1 top-2.5 w-1.5 h-1.5 rounded-full bg-zinc-700 group-hover:bg-zinc-500 transition-colors" />
+            <div key={log.id} className="flex flex-col pl-4 py-1 hover:bg-zinc-900/30 rounded-none transition-colors group relative">
+              <div className="absolute left-1 top-2.5 w-1.5 h-1.5 rounded-none bg-zinc-700 group-hover:bg-zinc-500 transition-colors" />
               <div className="flex flex-wrap items-center gap-2 mb-1">
                 <span className="text-zinc-500 shrink-0">{log.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
                 <span className={cn(

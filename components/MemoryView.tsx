@@ -2,14 +2,21 @@ import React from 'react';
 import { Database, Search, BookOpen, Cpu, Shield, History, Network } from 'lucide-react';
 import { motion } from 'motion/react';
 
+import { CanvasText } from './ui/canvas-text';
+
 export const MemoryView = () => {
   return (
     <div className="p-8 h-full overflow-hidden bg-zinc-950 flex flex-col gap-6">
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h2 className="text-3xl font-bold flex items-center gap-3">
+          <h2 className="text-3xl font-bold flex items-center gap-3 text-white">
             <Database className="w-8 h-8 text-blue-500" />
-            Memory Systems
+            <CanvasText 
+              text="MEMORY_SYSTEMS" 
+              backgroundClassName="bg-zinc-950" 
+              colors={["#3b82f6", "#60a5fa", "#2563eb"]} 
+              lineGap={4}
+            />
           </h2>
           <p className="text-zinc-500 mt-2">Hybrid vector/relational storage with Karpachy-Neural-Wiki integration.</p>
         </div>

@@ -7,6 +7,12 @@ import { CommunicationLog } from './components/CommunicationLog';
 import { Settings } from './components/Settings';
 import { VaultView } from './components/VaultView';
 import { MemoryView } from './components/MemoryView';
+import { ResearchView } from './components/ResearchView';
+import { ScriptsView } from './components/ScriptsView';
+import { TokensView } from './components/TokensView';
+import { HistoryView } from './components/HistoryView';
+import { GridBackground } from './components/ui/GridBackground';
+import { CanvasText } from './components/ui/canvas-text';
 import { INITIAL_AGENTS, INITIAL_TASKS, INITIAL_LOGS } from './store';
 import { Activity, ShieldAlert, Cpu, LayoutPanelLeft, MessageSquareText, Beaker, History as HistoryIcon, Code2, Coins } from 'lucide-react';
 import { cn } from './lib/utils';
@@ -38,12 +44,18 @@ export default function App() {
         setIsExpanded={setIsSidebarExpanded}
       />
       
-      <main className="flex-1 flex flex-col min-w-0 bg-dot-grid relative overflow-hidden">
+      <main className="flex-1 flex flex-col min-w-0 relative overflow-hidden">
         <header className="h-14 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md px-6 flex items-center justify-between shrink-0 sticky top-0 z-20">
           <div className="flex items-center gap-4">
             <h2 className="font-semibold text-zinc-200 capitalize tracking-tight flex items-center gap-2">
               <Activity className="w-4 h-4 text-green-500" /> 
-              {activeTab === 'cli' ? 'CLI Harnesses' : activeTab.replace('-', ' ')}
+              <CanvasText 
+                text={activeTab === 'cli' ? 'CLI_HARNESSES' : activeTab.replace('-', '_').toUpperCase()} 
+                backgroundClassName="bg-zinc-950"
+                colors={["#a855f7", "#3b82f6"]}
+                lineGap={2}
+                animationDuration={10}
+              />
             </h2>
           </div>
           
@@ -74,7 +86,8 @@ export default function App() {
         </header>
 
         <div className="flex-1 overflow-hidden relative">
-          <AnimatePresence mode="wait">
+          <GridBackground>
+            <AnimatePresence mode="wait">
             {activeTab === 'dashboard' ? (
               <motion.div 
                 key="dashboard"
@@ -147,6 +160,46 @@ export default function App() {
               >
                 <MemoryView />
               </motion.div>
+            ) : activeTab === 'research' ? (
+              <motion.div
+                key="research"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full"
+              >
+                <ResearchView />
+              </motion.div>
+            ) : activeTab === 'scripts' ? (
+              <motion.div
+                key="scripts"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full"
+              >
+                <ScriptsView />
+              </motion.div>
+            ) : activeTab === 'tokens' ? (
+              <motion.div
+                key="tokens"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full"
+              >
+                <TokensView />
+              </motion.div>
+            ) : activeTab === 'history' ? (
+              <motion.div
+                key="history"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full"
+              >
+                <HistoryView />
+              </motion.div>
             ) : activeTab === 'settings' ? (
               <motion.div
                 key="settings"
@@ -165,11 +218,7 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 className="h-full flex items-center justify-center flex-col text-zinc-500 gap-6 bg-zinc-950"
               >
-                {activeTab === 'research' ? <Beaker className="w-16 h-16 opacity-20 text-blue-400" /> :
-                 activeTab === 'scripts' ? <Code2 className="w-16 h-16 opacity-20 text-purple-400" /> :
-                 activeTab === 'tokens' ? <Coins className="w-16 h-16 opacity-20 text-yellow-400" /> :
-                 activeTab === 'history' ? <HistoryIcon className="w-16 h-16 opacity-20 text-green-400" /> :
-                 <ShieldAlert className="w-16 h-16 opacity-20" />}
+                <ShieldAlert className="w-16 h-16 opacity-20" />
                 
                 <div className="text-center">
                   <h3 className="text-zinc-200 font-bold text-lg uppercase tracking-widest">
@@ -195,6 +244,7 @@ export default function App() {
               </motion.div>
             )}
           </AnimatePresence>
+          </GridBackground>
         </div>
       </main>
     </div>
