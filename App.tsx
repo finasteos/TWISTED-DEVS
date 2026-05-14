@@ -5,8 +5,10 @@ import { CliHarnessView } from './components/CliHarnessView';
 import { KanbanBoard } from './components/KanbanBoard';
 import { CommunicationLog } from './components/CommunicationLog';
 import { Settings } from './components/Settings';
+import { VaultView } from './components/VaultView';
+import { MemoryView } from './components/MemoryView';
 import { INITIAL_AGENTS, INITIAL_TASKS, INITIAL_LOGS } from './store';
-import { Activity, ShieldAlert, Cpu, LayoutPanelLeft, MessageSquareText } from 'lucide-react';
+import { Activity, ShieldAlert, Cpu, LayoutPanelLeft, MessageSquareText, Beaker, History as HistoryIcon, Code2, Coins } from 'lucide-react';
 import { cn } from './lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -20,7 +22,7 @@ export default function App() {
     }
   }, [activeTab]);
 
-  const [showPanels, setShowPanels] = useState(true);
+  const [showPanels, setShowPanels] = useState(false);
   const [agents] = useState(INITIAL_AGENTS);
   const [tasks] = useState(INITIAL_TASKS);
   const [logs] = useState(INITIAL_LOGS);
@@ -125,6 +127,26 @@ export default function App() {
               >
                 <CliHarnessView />
               </motion.div>
+            ) : activeTab === 'vault' ? (
+              <motion.div
+                key="vault"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full"
+              >
+                <VaultView />
+              </motion.div>
+            ) : activeTab === 'memory' ? (
+              <motion.div
+                key="memory"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="h-full"
+              >
+                <MemoryView />
+              </motion.div>
             ) : activeTab === 'settings' ? (
               <motion.div
                 key="settings"
@@ -137,19 +159,38 @@ export default function App() {
               </motion.div>
             ) : (
               <motion.div 
-                key="fallback"
+                key="placeholder"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="h-full flex items-center justify-center flex-col text-zinc-500 gap-4"
+                className="h-full flex items-center justify-center flex-col text-zinc-500 gap-6 bg-zinc-950"
               >
-                <ShieldAlert className="w-12 h-12 opacity-50" />
-                <p>Module '{activeTab}' is currently offline.</p>
+                {activeTab === 'research' ? <Beaker className="w-16 h-16 opacity-20 text-blue-400" /> :
+                 activeTab === 'scripts' ? <Code2 className="w-16 h-16 opacity-20 text-purple-400" /> :
+                 activeTab === 'tokens' ? <Coins className="w-16 h-16 opacity-20 text-yellow-400" /> :
+                 activeTab === 'history' ? <HistoryIcon className="w-16 h-16 opacity-20 text-green-400" /> :
+                 <ShieldAlert className="w-16 h-16 opacity-20" />}
+                
+                <div className="text-center">
+                  <h3 className="text-zinc-200 font-bold text-lg uppercase tracking-widest">
+                    Module '{activeTab.replace('-', ' ')}'
+                  </h3>
+                  <p className="text-sm mt-2 text-zinc-600 font-mono">Initializing neural handshake... [WAITING]</p>
+                </div>
+
+                <div className="w-48 h-1 bg-zinc-900 rounded-full overflow-hidden">
+                   <motion.div 
+                    animate={{ x: [-192, 192] }}
+                    transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                    className="w-1/2 h-full bg-gradient-to-r from-transparent via-zinc-600 to-transparent"
+                   />
+                </div>
+
                 <button 
                   onClick={() => setActiveTab('dashboard')} 
-                  className="px-4 py-2 mt-4 text-sm font-medium bg-zinc-800 text-zinc-200 rounded-md hover:bg-zinc-700 transition"
+                  className="px-6 py-2 mt-4 text-[10px] font-bold uppercase tracking-widest border border-zinc-800 text-zinc-400 rounded-full hover:bg-zinc-900 transition-all hover:text-zinc-200"
                 >
-                  Return to Dashboard
+                  Return to Command Center
                 </button>
               </motion.div>
             )}

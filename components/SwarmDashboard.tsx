@@ -12,25 +12,29 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { AgentNode } from './nodes/AgentNode';
-import { INITIAL_AGENTS } from '../store';
-import { ShieldAlert, Zap, SlidersHorizontal, Activity } from 'lucide-react';
+import { INITIAL_AGENTS, INITIAL_LOGS } from '../store';
+import { ShieldAlert, Zap, SlidersHorizontal, Activity, MessageSquareText, Terminal, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { motion, AnimatePresence } from 'motion/react';
+import { CommunicationLog } from './CommunicationLog';
 
 const nodeTypes = {
   agent: AgentNode,
 };
 
+const defaultViewport = { x: 0, y: 0, zoom: 2.5 };
+
 export const SwarmDashboard = () => {
   const [criticHardcore, setCriticHardcore] = useState(50);
-  const [activeAgents, setActiveAgents] = useState(['a1']); // Start with just Orchestrator
+  const [activeAgents, setActiveAgents] = useState(['a1']);
+  const [isConsoleExpanded, setIsConsoleExpanded] = useState(false);
   
   const initialNodes = useMemo(() => {
     return INITIAL_AGENTS.filter(a => activeAgents.includes(a.id)).map((agent, index) => ({
       id: agent.id,
       type: 'agent',
       data: { ...agent },
-      position: { x: index * 250, y: index * 100 },
+      position: { x: index * 300, y: index * 150 },
     }));
   }, [activeAgents]);
 
@@ -90,9 +94,15 @@ export const SwarmDashboard = () => {
           
           <div className="flex items-center gap-4 border-l border-zinc-800 pl-6">
              <div className="flex flex-col gap-1">
-                <div className="flex items-center justify-between">
+                <div 
+                  className="flex items-center justify-between"
+                  id="dashboard-metrics-container"
+                >
                   <label className="text-[10px] font-bold uppercase tracking-widest text-red-400 flex items-center gap-1">
-                    <ShieldAlert className="w-3 h-3" /> CRITIC HARDCORE LEVEL
+                    <ShieldAlert 
+                      className="w-3 h-3" 
+                      style={{ backgroundColor: '#1c1f14' }}
+                    /> CRITIC HARDCORE LEVEL
                   </label>
                   <span className="text-[10px] font-mono text-zinc-500 font-bold">{criticHardcore}%</span>
                 </div>
@@ -109,7 +119,12 @@ export const SwarmDashboard = () => {
 
         <button 
           onClick={simulateSwarmExpansion}
-          className="flex items-center gap-2 px-3 py-1.5 bg-purple-600/10 hover:bg-purple-600/20 border border-purple-500/30 rounded text-[10px] font-bold uppercase tracking-widest text-purple-400 transition-all"
+          style={{
+            backgroundColor: '#223542',
+            borderColor: '#deb0b0',
+            color: '#723a3a'
+          }}
+          className="flex items-center gap-2 px-3 py-1.5 border rounded text-[10px] font-bold uppercase tracking-widest transition-all"
         >
           <Zap className="w-3 h-3" />
           Stimulate Deployment
@@ -124,8 +139,7 @@ export const SwarmDashboard = () => {
           onEdgesChange={onEdgesChange}
           onConnect={onConnect}
           nodeTypes={nodeTypes}
-          fitView
-          defaultZoom={1.5}
+          defaultViewport={defaultViewport}
           minZoom={0.5}
           maxZoom={4}
           className="bg-dot-grid"
@@ -165,6 +179,56 @@ export const SwarmDashboard = () => {
               </div>
            </div>
         </div>
+
+        {/* Floating Command Console & Trace */}
+        <motion.div 
+          initial={false}
+          animate={{ 
+            height: isConsoleExpanded ? '300px' : '40px',
+            width: isConsoleExpanded ? '600px' : '200px'
+          }}
+          className="absolute bottom-6 left-6 bg-zinc-950/90 border border-zinc-800/80 backdrop-blur-xl rounded-2xl overflow-hidden shadow-2xl z-50 flex flex-col"
+        >
+          <button 
+            onClick={() => setIsConsoleExpanded(!isConsoleExpanded)}
+            className="h-10 px-4 flex items-center justify-between hover:bg-white/5 transition-colors shrink-0"
+          >
+            <div className="flex items-center gap-2">
+              <Terminal className="w-3 h-3 text-purple-400" />
+              <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">Command Console</span>
+            </div>
+            {isConsoleExpanded ? <ChevronDown className="w-3 h-3 text-zinc-600" /> : <ChevronUp className="w-3 h-3 text-zinc-600" />}
+          </button>
+          
+          <div className="flex-1 overflow-hidden grid grid-cols-2 divide-x divide-zinc-800/50">
+             <div className="flex flex-col p-4 overflow-hidden">
+                <h5 className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                  <MessageSquareText className="w-2.5 h-2.5 text-blue-400" /> Live Trace
+                </h5>
+                <div className="flex-1 overflow-hidden">
+                   <CommunicationLog logs={INITIAL_LOGS} agents={INITIAL_AGENTS} />
+                </div>
+             </div>
+             <div className="p-4 bg-black/40 font-mono text-[10px] space-y-2 overflow-y-auto custom-scrollbar">
+                <div className="flex items-start gap-2">
+                  <span className="text-purple-500">orchestrator:</span>
+                  <span className="text-zinc-300">Evaluating swarm expansion requirements...</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-purple-500">orchestrator:</span>
+                  <span className="text-zinc-300">Stimulating development agent nodes.</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-green-500">system:</span>
+                  <span className="text-zinc-500 italic">Nodes a2, a3, a4 connected to cluster.</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-purple-500">orchestrator:</span>
+                  <span className="text-zinc-100 animate-pulse">_</span>
+                </div>
+             </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

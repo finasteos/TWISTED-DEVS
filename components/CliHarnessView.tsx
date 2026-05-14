@@ -17,107 +17,110 @@ export const CliHarnessView = () => {
 
   const handleInstallAll = async () => {
     setInstallingAll(true);
-    // Simulate interactive installation
     await new Promise(resolve => setTimeout(resolve, 2000));
     setInstalledClis(CLIS.map(() => true));
     setInstallingAll(false);
   };
 
   return (
-    <div className="p-6 space-y-6 max-h-full overflow-y-auto">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold tracking-tight mb-1 flex items-center gap-2">
-            <TerminalSquare className="w-6 h-6 text-blue-400" />
-            CLI Harnesses
-          </h2>
-          <p className="text-zinc-500 text-sm">Manage and provision agentic command line interfaces.</p>
+    <div className="h-full flex flex-col bg-black">
+      {/* Top Bar for CLI management */}
+      <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-950/50">
+        <div className="flex items-center gap-6 overflow-x-auto no-scrollbar">
+          {CLIS.map((cli, idx) => (
+            <div key={cli.id} className="flex items-center gap-2 px-3 py-1.5 rounded bg-zinc-900/80 border border-zinc-800 shrink-0">
+              <div className={cn(
+                "w-2 h-2 rounded-full",
+                installedClis[idx] ? "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)]" : "bg-zinc-700"
+              )} />
+              <span className="text-[10px] font-bold text-zinc-300 uppercase tracking-wider">{cli.name}</span>
+            </div>
+          ))}
         </div>
         
         <button
           onClick={handleInstallAll}
           disabled={installingAll}
           className={cn(
-            "flex items-center gap-2 px-4 py-2 rounded-lg font-semibold text-sm transition-all",
+            "flex items-center gap-2 px-3 py-1.5 rounded font-bold text-[10px] uppercase tracking-widest transition-all shrink-0 ml-4",
             installingAll 
               ? "bg-zinc-800 text-zinc-500 cursor-not-allowed" 
-              : "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/20"
+              : "bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30"
           )}
         >
-          {installingAll ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Provisioning...
-            </>
-          ) : (
-            <>
-              <Download className="w-4 h-4" />
-              Install All Dependencies
-            </>
-          )}
+          {installingAll ? <Loader2 className="w-3 h-3 animate-spin" /> : <Download className="w-3 h-3" />}
+          {installingAll ? 'PROVISIONING' : 'PROVISION ALL'}
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {CLIS.map((cli, idx) => (
-          <motion.div
-            key={cli.id}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.05 }}
-            className="group p-4 rounded-xl border border-zinc-800 bg-zinc-900/40 backdrop-blur-sm hover:border-zinc-700 transition-all flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-start justify-between mb-2">
-                <div>
-                  <h3 className="font-bold text-zinc-200">{cli.name}</h3>
-                  <span className="text-[10px] font-mono text-zinc-500">{cli.version}</span>
-                </div>
-                {installedClis[idx] ? (
-                  <CheckCircle2 className="w-5 h-5 text-green-500" />
-                ) : (
-                  <div className="w-2 h-2 rounded-full bg-zinc-700" />
-                )}
-              </div>
-              <p className="text-xs text-zinc-400 mb-6 leading-relaxed">
-                {cli.description}
-              </p>
-            </div>
+      {/* Massive Main Terminal Area */}
+      <div className="flex-1 p-6 font-mono text-sm overflow-y-auto custom-scrollbar">
+        <div className="max-w-4xl mx-auto space-y-4">
+          <div className="space-y-1">
+            <p className="text-zinc-600">Arkitekt Framework [Version 3.1.22]</p>
+            <p className="text-zinc-600">(c) 2026 Arkitekt Corp. All rights reserved.</p>
+          </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-zinc-800/50">
-              <span className={cn(
-                "text-[10px] uppercase font-bold tracking-widest",
-                installedClis[idx] ? "text-green-500/70" : "text-zinc-600"
-              )}>
-                {installedClis[idx] ? 'Ready' : 'Pending'}
-              </span>
-              <button 
-                className={cn(
-                  "px-3 py-1 rounded text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 transition-colors",
-                  installedClis[idx] 
-                    ? "bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
-                    : "bg-blue-600/10 text-blue-400 hover:bg-blue-600/20"
-                )}
-              >
-                <Play className="w-3 h-3" />
-                {installedClis[idx] ? 'Run' : 'Install'}
-              </button>
+          <div className="space-y-1 pt-4">
+            <div className="flex gap-2">
+              <span className="text-purple-400">system@arkitekt:</span>
+              <span className="text-blue-400">~</span>
+              <span className="text-white">$</span>
+              <span className="text-zinc-100">arkitekt-swarm --status</span>
             </div>
-          </motion.div>
-        ))}
+            <p className="text-zinc-400 pl-4">[ORCH] Cluster initialized on 12 nodes.</p>
+            <p className="text-zinc-400 pl-4">[CRIT] Hardcore level set to 50%.</p>
+            <p className="text-zinc-400 pl-4">[MEM] Connected to SQLite local-fs and Qdrant cluster.</p>
+          </div>
+
+          <div className="space-y-1 pt-2">
+             <div className="flex gap-2 text-yellow-500/80">
+              <span>[WARNING]</span>
+              <span>Memory vault "Karpachy-Wiki" is out of sync. Re-indexing required.</span>
+            </div>
+          </div>
+
+          <div className="space-y-1 pt-4">
+            <div className="flex gap-2">
+              <span className="text-purple-400">system@arkitekt:</span>
+              <span className="text-blue-400">~</span>
+              <span className="text-white">$</span>
+              <span className="text-zinc-100">arkitekt provision --all-clis</span>
+            </div>
+            <p className="text-zinc-500 pl-4">Verifying environment for Python 3.11... <span className="text-green-500">OK</span></p>
+            <p className="text-zinc-500 pl-4">Checking Node.js v20.12.0... <span className="text-green-500">OK</span></p>
+            <p className="text-zinc-500 pl-4">Provisioning Claude Code native harness... <span className="text-green-500">SUCCESS</span></p>
+            <p className="text-zinc-500 pl-4">Connecting OpenAI Codex compute pipeline... <span className="text-green-500">SUCCESS</span></p>
+            <p className="text-zinc-500 pl-4">Initializing Hermes workflow... <span className="text-green-500">SUCCESS</span></p>
+          </div>
+
+          <div className="space-y-1 pt-4">
+            <div className="flex gap-2">
+              <span className="text-purple-400">system@arkitekt:</span>
+              <span className="text-blue-400">~</span>
+              <span className="text-white">$</span>
+              <span className="text-zinc-100 underline decoration-purple-500/50 underline-offset-4 animate-pulse">_</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="mt-8 p-4 rounded-xl border border-zinc-800 bg-black text-xs font-mono text-zinc-400 overflow-hidden">
-        <div className="flex items-center justify-between mb-2 border-b border-zinc-900 pb-2">
-          <span className="text-zinc-500">Live Installation Logs</span>
-          <span className="text-green-500/50">Live</span>
+      {/* Terminal Footer Info */}
+      <div className="h-8 border-t border-zinc-900 bg-zinc-950/80 px-4 flex items-center justify-between text-[9px] font-mono text-zinc-600">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+            <span>LOCAL: 127.0.0.1</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+             <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+             <span>VPN: ACTIVE</span>
+          </div>
         </div>
-        <div className="space-y-1">
-          <p className="text-blue-400">$ arkitekt provision --all-clis</p>
-          <p>[SYSTEM] Verifying environment for Python 3.11... OK</p>
-          <p>[SYSTEM] Checking Node.js v20.12.0... OK</p>
-          <p>[CLAUDE] Setting up KAIROS daemon... <span className="text-green-500">Done</span></p>
-          <p className="animate-pulse">_</p>
+        <div className="flex items-center gap-4 uppercase tracking-tighter">
+          <span>UTF-8</span>
+          <span>Ln 42, Col 12</span>
+          <span className="text-purple-500 font-bold">Arkitekt-Shell</span>
         </div>
       </div>
     </div>

@@ -9,17 +9,24 @@ import {
   Archive,
   TerminalSquare,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  ScrollText,
+  Code2,
+  Coins,
+  History,
+  ShieldCheck
 } from 'lucide-react';
 import { motion } from 'motion/react';
 
 const navItems = [
   { id: 'dashboard', icon: Network, label: 'Swarm Overview' },
-  { id: 'cli', icon: TerminalSquare, label: 'CLI Harnesses' },
-  { id: 'memory', icon: Database, label: 'Memory System (Qdrant)' },
-  { id: 'vault', icon: BookOpen, label: 'Knowledge Vault' },
+  { id: 'cli', icon: TerminalSquare, label: 'CLI Harness' },
+  { id: 'memory', icon: Database, label: 'Memory (Qdrant/Wiki)' },
   { id: 'research', icon: Beaker, label: 'AutoResearch' },
-  { id: 'misc', icon: Archive, label: 'Auto-Sorter (Misc)' },
+  { id: 'scripts', icon: Code2, label: 'Global Scripts' },
+  { id: 'vault', icon: ShieldCheck, label: 'Knowledge Vault' },
+  { id: 'tokens', icon: Coins, label: 'Token Economy' },
+  { id: 'history', icon: History, label: 'Run History/Archive' },
 ];
 
 export const Sidebar = ({ 
